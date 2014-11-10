@@ -75,7 +75,6 @@ static int try_check_error(lua_State *L) {
   return 0;
 }
 
-
 static int try_error(lua_State *L){
   lua_newtable(L);
   if(lua_isnil(L, -2)){
@@ -158,8 +157,7 @@ static int try_protected_k(lua_State *L, int status, lua_KContext ctx){
     if(try_check_error(L)) return 2;
   }
 
-  lua_error(L);
-  return 0;
+  return lua_error(L);
 }
 
 static int try_protected(lua_State *L){
@@ -180,7 +178,6 @@ static int try_new_protect(lua_State *L){
   lua_pushcclosure(L, try_protected, 1);
   return 1;
 }
-
 
 /*-------------------------------------------------------------------------*\
 * Init module
