@@ -1,0 +1,33 @@
+PROJECT = 'try'
+
+INITLAKEFILE()
+
+DEFINES = L{DEFINES, 
+  IF(WINDOWS,  'DLL_EXPORT',  '');
+}
+
+try = c.shared{'try',
+  base     = 'src',
+  src      = '*.c',
+  needs    = {LUA_NEED},
+  defines  = DEFINES,
+  dynamic  = DYNAMIC,
+  strip    = true,
+}
+
+target('build', try)
+
+install = target('install', {
+  file.group{odir=LIBDIR;              src = try                              };
+  -- file.group{odir=LIBDIR;              src = J("src", "lua") ; recurse = true };
+  -- file.group{odir=J(ROOT, 'examples'); src = 'examples';       recurse = true };
+  file.group{odir=TESTDIR;             src = 'test';           recurse = true };
+})
+
+target('test', install, function()
+  run_test('test.lua')
+
+  if not test_summary() then
+    quit("test fail")
+  end
+end)

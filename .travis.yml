@@ -1,0 +1,36 @@
+language: c
+
+env:
+  global:
+    - LUAROCKS=2.2.0
+  matrix:
+    - LUA=lua5.1
+    - LUA=lua5.2
+    - LUA=luajit
+
+services:
+  - memcached
+
+branches:
+  only:
+    - master
+
+before_install:
+  - bash .travis/setup_lua.sh
+  - sudo luarocks install lunitx
+  - sudo pip install cpp-coveralls
+
+install:
+  - sudo luarocks make rockspecs/try-scm-0.rockspec CFLAGS="-O2 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
+
+script: 
+  - cd test
+  - lunit.sh test.lua
+
+after_success:
+  - coveralls -b .. -r ..
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
