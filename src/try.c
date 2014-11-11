@@ -127,25 +127,27 @@ typedef int lua_KContext;
 #endif
 #endif
 
+#if LUA_VERSION_NUM <= 501
+# define PCALLK(L, N, M, H, C, K) lua_pcall(L, N, M, H)
+#else
+# define PCALLK(L, N, M, H, C, K) lua_pcallk(L, N, M, H, C, K)
+#endif
+
+#if LUA_VERSION_NUM <= 501
+# define try_protected_cont 0
+#elif LUA_VERSION_NUM == 502
+# define try_protected_cont try_protected
+#else
+# define try_protected_cont try_protected_k
+#endif
+
 static int try_protected(lua_State *L);
 
 static int try_protected_k(lua_State *L, int status, lua_KContext ctx){
   if(status == LUA_OK){
     lua_pushvalue(L, lua_upvalueindex(1));
     lua_insert(L, 1);
-
-    status = 
-#if LUA_VERSION_NUM <= 501
-    lua_pcall(L, lua_gettop(L) - 1, LUA_MULTRET, 0);
-#else
-    lua_pcallk(L, lua_gettop(L) - 1, LUA_MULTRET, 0, 0,
-#if LUA_VERSION_NUM == 502
-    try_protected
-#else
-    try_protected_k
-#endif
-    );
-#endif
+    status = PCALLK(L, lua_gettop(L) - 1, LUA_MULTRET, 0, 0, try_protected_cont);
     if(status == LUA_OK) status = LUA_YIELD;
   }
 
@@ -189,5 +191,10 @@ EXPORT_API int luaopen_try(lua_State *L) {
 #else
   luaL_openlib(L, NULL, func, 0);
 #endif
+
+  lua_pushnil(L);
+  lua_pushcclosure(L, try_assert, 1);
+  lua_setfield(L, -2, "assert");
+
   return 1;
 }

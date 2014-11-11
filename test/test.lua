@@ -32,10 +32,6 @@ local it = setmetatable(_ENV or _M, {__call = function(self, describe, fn)
   self["test " .. describe] = fn
 end})
 
-function setup() end
-
-function teardown() end
-
 it("return value", function()
   local fn = assert_function(try.protect(function()
     return 1, nil, 3, nil
@@ -88,6 +84,7 @@ it("raise error", function()
   local ok, err = pcall(fn)
   assert_false(ok)
   assert_match(EVALUE, err)
+  assert_equal(0, n)
 end)
 
 it("raise error and return table", function()
@@ -102,6 +99,37 @@ it("raise error and return table", function()
   local ok, err = pcall(fn)
   assert_false(ok)
   assert_equal(EVALUE, err)
+  assert_equal(0, n)
+end)
+
+end
+
+local _ENV = TEST_CASE'try.assert' if ENABLE then
+
+local it = setmetatable(_ENV or _M, {__call = function(self, describe, fn)
+  self["test " .. describe] = fn
+end})
+
+it("call assert", function()
+  local EVALUE = 'some value'
+
+  local fn = assert_function(try.protect(function()
+    try.assert(nil, EVALUE)
+  end))
+  
+  local _, b = assert_nil(fn())
+  assert_equal(EVALUE, b)
+end)
+
+it("call assert and return nil", function()
+  local EVALUE = nil
+
+  local fn = assert_function(try.protect(function()
+    try.assert(nil, EVALUE)
+  end))
+  
+  local _, b = assert_nil(fn())
+  assert_equal(EVALUE, b)
 end)
 
 end
@@ -111,10 +139,6 @@ local _ENV = TEST_CASE'try.coro' if ENABLE and not IS_LUA_51 then
 local it = setmetatable(_ENV or _M, {__call = function(self, describe, fn)
   self["test " .. describe] = fn
 end})
-
-function setup() end
-
-function teardown() end
 
 it("return value", function()
   local co = coroutine.create(try.protect(function(...)
