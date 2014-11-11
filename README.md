@@ -6,6 +6,8 @@ lua-try
 
 Simple exception support based on LuaSocket
 
+You can read [this article](http://lua-users.org/wiki/FinalizedExceptions).
+
 ##Usage
 ```Lua
 local try = require "try"
