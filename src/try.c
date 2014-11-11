@@ -17,7 +17,6 @@
 static const char *TRY_ERROR_IDX = "Dummy";
 static const char *TRY_ERROR_NIL = "NIL";
 
-
 /*=========================================================================*\
 * Internal function prototypes.
 \*=========================================================================*/
@@ -28,6 +27,9 @@ static int try_new_protect(lua_State *L);
 static luaL_Reg func[] = {
     {"new",       try_new_assert},
     {"protect",   try_new_protect},
+
+    /* compat with LuaSocket */
+    {"newtry",    try_new_assert},
     {NULL,        NULL}
 };
 
