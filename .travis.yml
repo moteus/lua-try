@@ -6,6 +6,7 @@ env:
   matrix:
     - LUA=lua5.1
     - LUA=lua5.2
+    - LUA=lua5.3
     - LUA=luajit
 
 services:
@@ -17,7 +18,7 @@ branches:
 
 before_install:
   - bash .travis/setup_lua.sh
-  - sudo luarocks install lunitx
+  - sudo luarocks install lunitx --deps-mode=none
   - sudo pip install cpp-coveralls
 
 install:
