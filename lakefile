@@ -19,7 +19,7 @@ target('build', try)
 
 install = target('install', {
   file.group{odir=LIBDIR;              src = try                              };
-  -- file.group{odir=LIBDIR;              src = J("src", "lua") ; recurse = true };
+  file.group{odir=LIBDIR;              src = J("src", "lua") ; recurse = true };
   -- file.group{odir=J(ROOT, 'examples'); src = 'examples';       recurse = true };
   file.group{odir=TESTDIR;             src = 'test';           recurse = true };
 })

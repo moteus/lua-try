@@ -28,5 +28,6 @@ build = {
     try = {
       sources = { "src/try.c" },
     },
+    ["try.co"] =  "src/lua/try/co.lua",
   }
 }

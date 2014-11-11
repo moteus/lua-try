@@ -14,7 +14,6 @@
 #  define EXPORT_API LUALIB_API
 #endif
 
-static const char *TRY_ERROR_IDX = "Dummy";
 static const char *TRY_ERROR_NIL = "NIL";
 
 /*=========================================================================*\
@@ -57,7 +56,7 @@ void lua_rawsetp (lua_State *L, int index, const void *p){
 \*-------------------------------------------------------------------------*/
 static int try_check_error(lua_State *L) {
   if(lua_istable(L, -1)){
-    lua_rawgetp(L, -1, TRY_ERROR_IDX);
+    lua_rawgetp(L, -1, TRY_ERROR_NIL);
 
     if(lua_isnil(L, -1)){ /*not try error*/
       lua_pop(L, 1);
@@ -85,7 +84,7 @@ static int try_error(lua_State *L){
   else{
     lua_pushvalue(L, -2);
   }
-  lua_rawsetp(L, -2, TRY_ERROR_IDX);
+  lua_rawsetp(L, -2, TRY_ERROR_NIL);
   return lua_error(L);
 }
 
@@ -197,6 +196,9 @@ EXPORT_API int luaopen_try(lua_State *L) {
   lua_pushnil(L);
   lua_pushcclosure(L, try_assert, 1);
   lua_setfield(L, -2, "assert");
+
+  lua_pushlightuserdata(L, (void*)TRY_ERROR_NIL);
+  lua_setfield(L, -2, "NIL");
 
   return 1;
 }

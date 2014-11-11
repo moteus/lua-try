@@ -134,7 +134,11 @@ end)
 
 end
 
-local _ENV = TEST_CASE'try.coro' if ENABLE and not IS_LUA_51 then
+local _ENV = TEST_CASE'try.coro' if ENABLE then
+
+local try = try
+
+if IS_LUA_51 then try = require "try.co" end
 
 local it = setmetatable(_ENV or _M, {__call = function(self, describe, fn)
   self["test " .. describe] = fn
