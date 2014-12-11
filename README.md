@@ -8,6 +8,8 @@ Simple exception support based on LuaSocket
 
 You can read [this article](http://lua-users.org/wiki/FinalizedExceptions).
 
+Also you can check out pure Lua implementation of this library - [try-lua](https://github.com/hjelmeland/try-lua) .
+
 ##Usage
 ```Lua
 local try = require "try"
